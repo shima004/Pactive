@@ -1,11 +1,11 @@
-package db
+package postgres
 
 import (
 	"fmt"
 	"os"
 	"time"
 
-	"github.com/shima004/pactive/model"
+	"github.com/shima004/pactive/domain/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -23,11 +23,11 @@ func GetDB() (*gorm.DB, error) {
 	return connectionPool, nil
 }
 
-func InitDB() (*gorm.DB, error) {
+func InitDB() *gorm.DB {
 	connection := sqlConnect()
-	connection.AutoMigrate(&model.Test{})
+	connection.AutoMigrate(&model.User{})
 	connectionPool = connection
-	return connectionPool, nil
+	return connectionPool
 }
 
 func sqlConnect() (database *gorm.DB) {
