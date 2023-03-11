@@ -42,10 +42,10 @@ func LoadConfig() *appConfig {
 			Sslmode:  os.Getenv("POSTGRES_SSL_MODE"),
 		},
 		ServerInfo: &ServerInfo{
-			Host:     "localhost",
+			Host:     os.Getenv("SERVER_HOST"),
 			Port:     "8080",
-			Domain:   "localhost:8080",
-			Protocol: "http",
+			Domain:   "shimapaca.net",
+			Protocol: os.Getenv("SERVER_PROTOCOL"),
 		},
 	}
 	return appConfig
