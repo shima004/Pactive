@@ -1,0 +1,8 @@
+FROM golang:1.20.1
+
+WORKDIR /go/src/server
+
+RUN go mod tidy
+
+CMD ["go", "run", "main.go"]
+

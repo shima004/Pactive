@@ -18,7 +18,7 @@ services:
       - .env
 
   server:
-    image: golang:1.20.1
+    build: ./build/server
     container_name: server
     ports:
       - "443:443"
@@ -26,7 +26,6 @@ services:
     volumes:
       - ./server:/go/src/server
     working_dir: /go/src/server
-    command: go run main.go
     depends_on:
       - postgres
     env_file:
