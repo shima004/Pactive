@@ -36,6 +36,6 @@ func Run() {
 		e.Logger.Fatal(e.StartAutoTLS(":443"))
 	} else {
 		log.Println("Server is running on http mode")
-		e.Logger.Fatal(e.Start(":8080"))
+		e.Logger.Fatal(e.Start(":80"))
 	}
 }
