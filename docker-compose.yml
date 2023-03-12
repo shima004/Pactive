@@ -22,6 +22,7 @@ services:
     container_name: server
     ports:
       - "443:443"
+      - "80:80"
     volumes:
       - ./server:/go/src/server
     working_dir: /go/src/server
