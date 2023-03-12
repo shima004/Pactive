@@ -22,6 +22,7 @@ type ServerInfo struct {
 	Port     string
 	Domain   string
 	Protocol string
+	IP       string
 }
 
 var AppConfig *appConfig
@@ -46,6 +47,7 @@ func LoadConfig() *appConfig {
 			Port:     "8080",
 			Domain:   "shimapaca.net",
 			Protocol: os.Getenv("SERVER_PROTOCOL"),
+			IP:       os.Getenv("SERVER_IP"),
 		},
 	}
 	return appConfig

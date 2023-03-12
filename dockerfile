@@ -1,11 +1,16 @@
 FROM golang:1.20.1
 
-COPY ./server /go/src/server
+ENV TZ /usr/share/zoneinfo/Asia/Tokyo
+ENV ROOT = /go/src/server
+ENV GO111MODULE=on
 
-WORKDIR /go/src/server
+COPY ./server ${ROOT}
+
+WORKDIR ${ROOT}
 
 RUN go mod tidy
 RUN go mod download
 
-CMD ["go", "run", "main.go"]
+RUN go install github.com/cosmtrek/air@latest
+CMD ["air", "-c", ".air.toml"]
 
