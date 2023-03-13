@@ -23,6 +23,8 @@ type ServerInfo struct {
 	Domain   string
 	Protocol string
 	IP       string
+	CertFile string
+	KeyFile  string
 }
 
 var AppConfig *appConfig
@@ -48,6 +50,8 @@ func LoadConfig() *appConfig {
 			Domain:   "shimapaca.net",
 			Protocol: os.Getenv("SERVER_PROTOCOL"),
 			IP:       os.Getenv("SERVER_IP"),
+			CertFile: os.Getenv("SERVER_CERT_FILE"),
+			KeyFile:  os.Getenv("SERVER_KEY_FILE"),
 		},
 	}
 	return appConfig
