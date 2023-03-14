@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"strings"
 
 	"github.com/go-fed/activity/streams/vocab"
 	"github.com/shima004/pactive/domain/model"
@@ -33,5 +34,7 @@ func (u *userUsecase) GetUser(ctx context.Context, resource string) (vocab.Activ
 }
 
 func (u *userUsecase) GetWebFinger(ctx context.Context, resource string) (*model.WebFinger, error) {
-	return u.UserService.GetWebFinger(ctx, resource)
+	name := strings.Split(resource, "@")[0]
+	name = strings.Split(name, ":")[1]
+	return u.UserService.GetWebFinger(ctx, name)
 }

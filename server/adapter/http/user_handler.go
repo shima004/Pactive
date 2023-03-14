@@ -2,10 +2,13 @@ package http
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"io"
 	"log"
+	"os"
 
 	"github.com/labstack/echo/v4"
+	"github.com/shima004/pactive/config"
 	"github.com/shima004/pactive/domain/model"
 	"github.com/shima004/pactive/usecase"
 )
@@ -58,16 +61,37 @@ func (h *UserHandler) GetUser() echo.HandlerFunc {
 
 func (h *UserHandler) GetWebFinger() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		ctx := c.Request().Context()
 		resource := c.QueryParam("resource")
 		if resource == "" {
-			return c.JSON(200, "<XRD><Link rel=\"lrdd\" type=\"application/xrd+xml\" template=\"https://localhost:8080/.well-known/webfinger?resource={uri}\"/></XRD>")
-		}
-		webFinger, err := h.usecase.GetWebFinger(ctx, resource)
-		if err != nil {
+			c.Logger().Error("resource is empty")
 			return c.JSON(400, "invalid resource")
 		}
-		return c.JSON(200, webFinger)
+		webfinger, err := h.usecase.GetWebFinger(c.Request().Context(), resource)
+		if err != nil {
+			c.Logger().Error(err)
+			return c.JSON(400, "invalid resource")
+		}
+		return c.JSON(200, webfinger)
+	}
+}
+
+func (h *UserHandler) GetHostMeta() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		file, err := os.Open("assets/host-meta.xml")
+		if err != nil {
+			c.Logger().Error(err)
+			return c.JSON(400, "invalid resource")
+		}
+		defer file.Close()
+		decoder := xml.NewDecoder(file)
+		hostMeta := &model.HostMeta{}
+		if err := decoder.Decode(hostMeta); err != nil {
+			c.Logger().Error(err)
+			return c.JSON(400, "invalid resource")
+		}
+		serverInfo := config.GetServerInfo()
+		hostMeta.Link.Template = serverInfo.Protocol + "://" + serverInfo.Host + "/.well-known/webfinger?resource={uri}"
+		return c.XML(200, hostMeta)
 	}
 }
 

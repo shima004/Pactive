@@ -7,7 +7,8 @@ type WebFinger struct {
 }
 
 type Link struct {
-	Rel  string `json:"rel"`
-	Type string `json:"type"`
-	Href string `json:"href"`
+	Rel      string `json:"rel"`
+	Type     string `json:"type"`
+	Href     string `json:"href"`
+	Template string `json:"template"`
 }

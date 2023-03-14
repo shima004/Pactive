@@ -3,7 +3,6 @@ package postgres
 import (
 	"context"
 	"net/url"
-	"strings"
 
 	"github.com/go-fed/activity/streams"
 	"github.com/go-fed/activity/streams/vocab"
@@ -87,31 +86,38 @@ func (r *UserRepository) GetUser(ctx context.Context, resource string) (vocab.Ac
 }
 
 func (r *UserRepository) GetWebFinger(ctx context.Context, resource string) (*model.WebFinger, error) {
-	resource_split := strings.Split(resource, "@")
-	name := resource_split[0]
-	host := resource_split[1]
-
 	var user model.User
-	err := r.DB.Where("name = ?", name).First(&user).Error
+	err := r.DB.Where("name = ?", resource).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
-	return &model.WebFinger{
-		Subject: "acct:" + resource,
+	serverInfo := config.GetServerInfo()
+	protocol := serverInfo.Protocol
+	domain := serverInfo.Domain
+
+	webFinger := &model.WebFinger{
+		Subject: "acct:" + user.Name + "@" + domain,
 		Aliases: []string{
-			"https://" + host + "/" + name,
+			protocol + "://" + domain + "/@" + user.Name,
+			protocol + "://" + domain + "/users/" + user.Name,
 		},
 		Links: []model.Link{
 			{
 				Rel:  "http://webfinger.net/rel/profile-page",
 				Type: "text/html",
-				Href: "https://" + host + "/" + name,
+				Href: protocol + "://" + domain + "/@" + user.Name,
 			},
 			{
 				Rel:  "self",
 				Type: "application/activity+json",
-				Href: "https://" + host + "/users/" + name,
+				Href: protocol + "://" + domain + "/users/" + user.Name,
+			},
+			{
+				Rel:      "http://ostatus.org/schema/1.0/subscribe",
+				Template: protocol + "://" + domain + "/authorize_interaction?uri={uri}",
 			},
 		},
-	}, nil
+	}
+
+	return webFinger, nil
 }

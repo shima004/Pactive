@@ -9,7 +9,7 @@ type User struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt time.Time `gorm:"index"`
-	Name      string
+	Name      string    `gorm:"unique"`
 	Email     string
 	Password  string
 	PublicKey string
