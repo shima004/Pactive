@@ -2,3 +2,4 @@
 db/postgres
 .DS_Store
 server/tmp
+.tls
