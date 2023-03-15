@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"io"
-	"log"
 	"os"
 
 	"github.com/labstack/echo/v4"
@@ -53,18 +52,20 @@ func (h *UserHandler) AddUser() echo.HandlerFunc {
 func (h *UserHandler) GetUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
+
 		if c.Request().Header.Get("Accept") != "application/activity+json" {
+			c.Logger().Info("invalid accept header" + c.Request().Header.Get("Accept"))
 			return c.JSON(400, "invalid accept header")
 		}
 		resource := c.Param("resource")
 		user, err := h.usecase.GetUser(ctx, resource)
 		if err != nil {
-			log.Println(err)
+			c.Logger().Info(err)
 			return c.JSON(400, "invalid id")
 		}
 		json, err := user.Serialize()
 		if err != nil {
-			log.Println(err)
+			c.Logger().Error(err)
 			return c.JSON(400, "invalid id")
 		}
 		return c.JSON(200, json)
