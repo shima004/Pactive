@@ -33,13 +33,15 @@ type AddUserRequest struct {
 func (h *UserHandler) AddUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
-		name := c.QueryParam("name")
-		email := c.QueryParam("email")
-		password := c.QueryParam("password")
+		request := &AddUserRequest{}
+		if err := c.Bind(request); err != nil {
+			return c.JSON(400, "invalid json body")
+		}
 		user := &model.User{
-			Name:     name,
-			Email:    email,
-			Password: password,
+			Name:      request.Name,
+			Email:     request.Email,
+			Password:  request.Password,
+			PublicKey: request.PublicKey,
 		}
 		if err := h.usecase.AddUser(ctx, user); err != nil {
 			return c.JSON(400, "invalid user")
