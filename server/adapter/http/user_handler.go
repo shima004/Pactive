@@ -23,6 +23,13 @@ func NewUserHandler(usecase usecase.IUserUsecase) *UserHandler {
 	}
 }
 
+type AddUserRequest struct {
+	Name      string `json:"name"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	PublicKey string `json:"public_key"`
+}
+
 func (h *UserHandler) AddUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
@@ -44,6 +51,9 @@ func (h *UserHandler) AddUser() echo.HandlerFunc {
 func (h *UserHandler) GetUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
+		if c.Request().Header.Get("Accept") != "application/activity+json" {
+			return c.JSON(400, "invalid accept header")
+		}
 		resource := c.Param("resource")
 		user, err := h.usecase.GetUser(ctx, resource)
 		if err != nil {

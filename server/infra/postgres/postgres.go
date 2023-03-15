@@ -93,7 +93,7 @@ func (r *UserRepository) GetWebFinger(ctx context.Context, resource string) (*mo
 	}
 	serverInfo := config.GetServerInfo()
 	protocol := serverInfo.Protocol
-	domain := serverInfo.Domain
+	domain := serverInfo.Host
 
 	webFinger := &model.WebFinger{
 		Subject: "acct:" + user.Name + "@" + domain,
