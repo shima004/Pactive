@@ -26,6 +26,8 @@ func Run() {
 	userHandler := http.NewUserHandler(userUsecase)
 
 	http.InitRouter(e, userHandler)
+	// static image
+	e.Static("/images", "assets/images")
 
 	serverInfo := config.GetServerInfo()
 	mode := os.Getenv("SERVER_MODE")

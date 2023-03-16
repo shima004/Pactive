@@ -78,11 +78,21 @@ func (r *UserRepository) GetUser(ctx context.Context, resource string) (vocab.Ac
 	summary.AppendXMLSchemaString(user.Name)
 	person.SetActivityStreamsSummary(summary)
 
-	tag := streams.NewActivityStreamsTagProperty()
-	person.SetActivityStreamsTag(tag)
+	icon := streams.NewActivityStreamsIconProperty()
+	image := streams.NewActivityStreamsImage()
+	url_ = streams.NewActivityStreamsUrlProperty()
+	url_.AppendIRI(&url.URL{Scheme: protocol, Host: domain, Path: "/assets/images/default_profile.png"})
+	image.SetActivityStreamsUrl(url_)
+	mediaType := streams.NewActivityStreamsMediaTypeProperty()
+	mediaType.Set("image/png")
+	image.SetActivityStreamsMediaType(mediaType)
+	icon.AppendActivityStreamsImage(image)
 
-	attachment := streams.NewActivityStreamsAttachmentProperty()
-	person.SetActivityStreamsAttachment(attachment)
+	// tag := streams.NewActivityStreamsTagProperty()
+	// person.SetActivityStreamsTag(tag)
+
+	// attachment := streams.NewActivityStreamsAttachmentProperty()
+	// person.SetActivityStreamsAttachment(attachment)
 
 	publicKey := streams.NewW3IDSecurityV1PublicKey()
 	publicKey.SetJSONLDId(id)
