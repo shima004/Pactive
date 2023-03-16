@@ -87,6 +87,7 @@ func (r *UserRepository) GetUser(ctx context.Context, resource string) (vocab.Ac
 	mediaType.Set("image/png")
 	image.SetActivityStreamsMediaType(mediaType)
 	icon.AppendActivityStreamsImage(image)
+	person.SetActivityStreamsIcon(icon)
 
 	// tag := streams.NewActivityStreamsTagProperty()
 	// person.SetActivityStreamsTag(tag)
