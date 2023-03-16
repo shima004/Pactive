@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/shima004/pactive/config"
@@ -52,11 +53,22 @@ func (h *UserHandler) AddUser() echo.HandlerFunc {
 func (h *UserHandler) GetUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
-		accept := c.Request().Header.Get("Accept")
-		if accept != "application/activity+json" && accept != "application/ld+json" {
-			c.Logger().Info("invalid accept header " + c.Request().Header.Get("Accept"))
-			return c.JSON(400, "invalid accept header")
+		accepts := strings.Split(c.Request().Header.Get("Accept"), ",")
+		allowAccepts := []string{"application/activity+json", "application/ld+json"}
+		accept := ""
+		for _, a := range accepts {
+			for _, aa := range allowAccepts {
+				if a == aa {
+					accept = a
+					break
+				}
+			}
 		}
+		if accept == "" {
+			c.Logger().Info("invalid accept: " + c.Request().Header.Get("Accept"))
+			return c.JSON(400, "invalid accept")
+		}
+
 		id := c.Param("id")
 		user, err := h.usecase.GetUser(ctx, id)
 		if err != nil {
