@@ -52,7 +52,8 @@ func (h *UserHandler) AddUser() echo.HandlerFunc {
 func (h *UserHandler) GetUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
-		if c.Request().Header.Get("Accept") != "application/activity+json" {
+		accept := c.Request().Header.Get("Accept")
+		if accept != "application/activity+json" && accept != "application/ld+json" {
 			c.Logger().Info("invalid accept header " + c.Request().Header.Get("Accept"))
 			return c.JSON(400, "invalid accept header")
 		}
