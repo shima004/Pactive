@@ -19,8 +19,6 @@ type PostgresInfo struct {
 
 type ServerInfo struct {
 	Host     string
-	Port     string
-	Domain   string
 	Protocol string
 	IP       string
 	CertFile string
@@ -46,9 +44,7 @@ func LoadConfig() *appConfig {
 		},
 		ServerInfo: &ServerInfo{
 			Host:     os.Getenv("SERVER_HOST"),
-			Port:     "8080",
-			Domain:   "shimapaca.net",
-			Protocol: os.Getenv("SERVER_PROTOCOL"),
+			Protocol: "https",
 			IP:       os.Getenv("SERVER_IP"),
 			CertFile: os.Getenv("SERVER_CERT_FILE"),
 			KeyFile:  os.Getenv("SERVER_KEY_FILE"),

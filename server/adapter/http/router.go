@@ -10,6 +10,6 @@ func InitRouter(e *echo.Echo, userHandler *UserHandler) {
 	e.GET("/.well-known/webfinger", userHandler.GetWebFinger())
 	e.GET("/.well-known/host-meta", userHandler.GetHostMeta())
 	e.POST("/users", userHandler.AddUser())
-	e.GET("/users/:resource ", userHandler.GetUser())
+	e.GET("/users/:id", userHandler.GetUser())
 	e.POST("/users/:resource/inbox", userHandler.PostInbox())
 }

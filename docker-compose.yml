@@ -8,9 +8,6 @@ services:
       - "5432:5432"
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
-    #   POSTGRES_PASSWORD: postgres
-    #   POSTGRES_USER: postgres
-    #   POSTGRES_DB: postgres
     volumes:
       - ./db/postgres:/var/lib/postgresql/data
       - ./db/postgres/init:/docker-entrypoint-initdb.d
@@ -23,6 +20,7 @@ services:
     ports:
       - "443:443"
       - "80:80"
+      - "8080:8080"
     volumes:
       - ./server:/go/src/server
     working_dir: /go/src/server

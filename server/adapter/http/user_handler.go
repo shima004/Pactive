@@ -52,20 +52,19 @@ func (h *UserHandler) AddUser() echo.HandlerFunc {
 func (h *UserHandler) GetUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
-
 		if c.Request().Header.Get("Accept") != "application/activity+json" {
-			c.Logger().Info("invalid accept header" + c.Request().Header.Get("Accept"))
+			c.Logger().Info("invalid accept header " + c.Request().Header.Get("Accept"))
 			return c.JSON(400, "invalid accept header")
 		}
-		resource := c.Param("resource")
-		user, err := h.usecase.GetUser(ctx, resource)
+		id := c.Param("id")
+		user, err := h.usecase.GetUser(ctx, id)
 		if err != nil {
-			c.Logger().Info(err)
+			c.Logger().Info(err.Error() + " id: " + id)
 			return c.JSON(400, "invalid id")
 		}
 		json, err := user.Serialize()
 		if err != nil {
-			c.Logger().Error(err)
+			c.Logger().Error(err.Error() + " id: " + id)
 			return c.JSON(400, "invalid id")
 		}
 		return c.JSON(200, json)

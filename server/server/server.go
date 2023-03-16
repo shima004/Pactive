@@ -2,8 +2,10 @@ package server
 
 import (
 	"log"
+	"os"
 
 	"github.com/labstack/echo/v4"
+	logger "github.com/labstack/gommon/log"
 	"github.com/shima004/pactive/adapter/http"
 	"github.com/shima004/pactive/config"
 	"github.com/shima004/pactive/domain/service"
@@ -26,11 +28,24 @@ func Run() {
 	http.InitRouter(e, userHandler)
 
 	serverInfo := config.GetServerInfo()
-	if serverInfo.Protocol == "https" {
-		log.Println("Server is running on https mode")
+	mode := os.Getenv("SERVER_MODE")
+
+	switch mode {
+	case "production":
+		log.Println("Server is running on production mode")
+		serverInfo.Protocol = "https"
+		e.Logger.SetLevel(logger.INFO)
 		e.Logger.Fatal(e.StartTLS(":443", serverInfo.CertFile, serverInfo.KeyFile))
-	} else {
-		log.Println("Server is running on http mode")
-		e.Logger.Fatal(e.Start(":80"))
+	case "development":
+		log.Println("Server is running on development mode")
+		serverInfo.Protocol = "https"
+		e.Logger.SetLevel(logger.DEBUG)
+		e.Logger.Fatal(e.StartTLS(":443", serverInfo.CertFile, serverInfo.KeyFile))
+	case "local":
+		log.Println("Server is running on test mode")
+		serverInfo.Protocol = "http"
+		serverInfo.Host = "localhost"
+		e.Logger.SetLevel(logger.DEBUG)
+		e.Logger.Fatal(e.Start(":8080"))
 	}
 }

@@ -1,4 +1,4 @@
-.env
+.env*
 db/postgres
 .DS_Store
 server/tmp

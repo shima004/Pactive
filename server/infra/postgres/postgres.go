@@ -34,7 +34,7 @@ func (r *UserRepository) GetUser(ctx context.Context, resource string) (vocab.Ac
 	}
 	serverInfo := config.GetServerInfo()
 	protocol := serverInfo.Protocol
-	domain := serverInfo.Domain
+	domain := serverInfo.Host
 
 	person := streams.NewActivityStreamsPerson()
 	id := streams.NewJSONLDIdProperty()
@@ -47,7 +47,7 @@ func (r *UserRepository) GetUser(ctx context.Context, resource string) (vocab.Ac
 	person.SetActivityStreamsContext(context)
 
 	url_ := streams.NewActivityStreamsUrlProperty()
-	url_.AppendXMLSchemaAnyURI(&url.URL{Scheme: protocol, Host: domain, Path: "/users/" + user.Name})
+	url_.AppendXMLSchemaAnyURI(&url.URL{Scheme: protocol, Host: domain, Path: "/@" + user.Name})
 	person.SetActivityStreamsUrl(url_)
 
 	inbox := streams.NewActivityStreamsInboxProperty()
@@ -69,6 +69,20 @@ func (r *UserRepository) GetUser(ctx context.Context, resource string) (vocab.Ac
 	preferredUsername := streams.NewActivityStreamsPreferredUsernameProperty()
 	preferredUsername.SetXMLSchemaString(user.Name)
 	person.SetActivityStreamsPreferredUsername(preferredUsername)
+
+	name := streams.NewActivityStreamsNameProperty()
+	name.AppendXMLSchemaString(user.Name)
+	person.SetActivityStreamsName(name)
+
+	summary := streams.NewActivityStreamsSummaryProperty()
+	summary.AppendXMLSchemaString(user.Name)
+	person.SetActivityStreamsSummary(summary)
+
+	tag := streams.NewActivityStreamsTagProperty()
+	person.SetActivityStreamsTag(tag)
+
+	attachment := streams.NewActivityStreamsAttachmentProperty()
+	person.SetActivityStreamsAttachment(attachment)
 
 	publicKey := streams.NewW3IDSecurityV1PublicKey()
 	publicKey.SetJSONLDId(id)
