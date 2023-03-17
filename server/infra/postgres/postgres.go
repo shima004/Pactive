@@ -81,7 +81,7 @@ func (r *UserRepository) GetUser(ctx context.Context, resource string) (vocab.Ac
 	icon := streams.NewActivityStreamsIconProperty()
 	image := streams.NewActivityStreamsImage()
 	url_ = streams.NewActivityStreamsUrlProperty()
-	url_.AppendIRI(&url.URL{Scheme: protocol, Host: domain, Path: "/assets/images/default_profile.png"})
+	url_.AppendIRI(&url.URL{Scheme: protocol, Host: domain, Path: "/images/default_profile.png"})
 	image.SetActivityStreamsUrl(url_)
 	mediaType := streams.NewActivityStreamsMediaTypeProperty()
 	mediaType.Set("image/png")
