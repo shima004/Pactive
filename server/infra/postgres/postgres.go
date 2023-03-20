@@ -44,6 +44,28 @@ func (r *UserRepository) GetUser(ctx context.Context, resource string) (vocab.Ac
 	context := streams.NewActivityStreamsContextProperty()
 	context.AppendIRI(&url.URL{Scheme: "https", Host: "www.w3.org", Path: "ns/activitystreams"})
 	context.AppendIRI(&url.URL{Scheme: "https", Host: "w3id.org", Path: "security/v1"})
+	// {
+	//	"manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+	//	"sensitive": "as:sensitive",
+	//	"Hashtag": "as:Hashtag",
+	//	"quoteUrl": "as:quoteUrl",
+	//	"toot": "http://joinmastodon.org/ns#",
+	//	"Emoji": "toot:Emoji",
+	//	"featured": "toot:featured",
+	//	"discoverable": "toot:discoverable",
+	//	"schema": "http://schema.org#",
+	//	"PropertyValue": "schema:PropertyValue",
+	//	"value": "schema:value",
+	//	"misskey": "https://misskey-hub.net/ns#",
+	//	"_misskey_content": "misskey:_misskey_content",
+	//	"_misskey_quote": "misskey:_misskey_quote",
+	//	"_misskey_reaction": "misskey:_misskey_reaction",
+	//	"_misskey_votes": "misskey:_misskey_votes",
+	//	"isCat": "misskey:isCat",
+	//	"vcard": "http://www.w3.org/2006/vcard/ns#"
+	//}
+	// add schema
+
 	person.SetActivityStreamsContext(context)
 
 	url_ := streams.NewActivityStreamsUrlProperty()
@@ -88,6 +110,10 @@ func (r *UserRepository) GetUser(ctx context.Context, resource string) (vocab.Ac
 	image.SetActivityStreamsMediaType(mediaType)
 	icon.AppendActivityStreamsImage(image)
 	person.SetActivityStreamsIcon(icon)
+
+	featured := streams.NewTootFeaturedProperty()
+	featured.SetIRI(&url.URL{Scheme: protocol, Host: domain, Path: "/users/" + user.Name + "/Collections/featured"})
+	person.SetTootFeatured(featured)
 
 	// tag := streams.NewActivityStreamsTagProperty()
 	// person.SetActivityStreamsTag(tag)
