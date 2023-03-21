@@ -70,12 +70,18 @@ func (h *UserHandler) GetUser() echo.HandlerFunc {
 		}
 
 		c.Response().Header().Set("Content-Type", accept)
-		jsonString := "{ \"@context\": [ \"https://www.w3.org/ns/activitystreams\", \"https://w3id.org/security/v1\", { \"manuallyApprovesFollowers\": \"as:manuallyApprovesFollowers\", \"sensitive\": \"as:sensitive\", \"Hashtag\": \"as:Hashtag\", \"quoteUrl\": \"as:quoteUrl\", \"toot\": \"http://joinmastodon.org/ns#\", \"Emoji\": \"toot:Emoji\", \"featured\": \"toot:featured\", \"discoverable\": \"toot:discoverable\", \"schema\": \"http://schema.org#\", \"PropertyValue\": \"schema:PropertyValue\", \"value\": \"schema:value\", \"misskey\": \"https://misskey-hub.net/ns#\", \"_misskey_content\": \"misskey:_misskey_content\", \"_misskey_quote\": \"misskey:_misskey_quote\", \"_misskey_reaction\": \"misskey:_misskey_reaction\", \"_misskey_votes\": \"misskey:_misskey_votes\", \"isCat\": \"misskey:isCat\", \"vcard\": \"http://www.w3.org/2006/vcard/ns#\" } ], \"type\": \"Person\", \"id\": \"https://misskey.io/users/9c1sd6g6p0\", \"inbox\": \"https://misskey.io/users/9c1sd6g6p0/inbox\", \"outbox\": \"https://misskey.io/users/9c1sd6g6p0/outbox\", \"followers\": \"https://misskey.io/users/9c1sd6g6p0/followers\", \"following\": \"https://misskey.io/users/9c1sd6g6p0/following\", \"featured\": \"https://misskey.io/users/9c1sd6g6p0/collections/featured\", \"sharedInbox\": \"https://misskey.io/inbox\", \"endpoints\": { \"sharedInbox\": \"https://misskey.io/inbox\" }, \"url\": \"https://misskey.io/@ShimaPaca\", \"preferredUsername\": \"ShimaPaca\", \"name\": null, \"summary\": null, \"icon\": null, \"image\": null, \"tag\": [], \"manuallyApprovesFollowers\": false, \"discoverable\": true, \"publicKey\": { \"id\": \"https://misskey.io/users/9c1sd6g6p0#main-key\", \"type\": \"Key\", \"owner\": \"https://misskey.io/users/9c1sd6g6p0\", \"publicKeyPem\": \"-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAvJvbxyjy96SegUkhSIW5\nre4OhFa2ucFw6u4G2n54LO36h5C0gJl11MYDsMkKWcQrAYAbOXJfYB51e3GSvhxa\n6lmJ3N4F2iMAd9F/leO2Ugrk+DfLQzSAQEtJL4QiKVu/ftuy+rqQGheX1a71g5Ka\nZAirLHqk2iDhbnv6PRzqoTBZpGS98bil6dpMCeGZGdw8EPyWWDc6HmdzQodyUuCl\nChQh2XkY2Af6gBrwo1w1OMON7o+wAcu5UwmqLCgJ7YZsBS2RlzqlpcXMnoWCnMok\nLifms1JlSXUJ14wTSkUay0vIqnwGXQm7feobYBpfWtFc7IxYnprrufzgsaDQd/9c\nuwRPdjaUx7sxE3IA1VJTK+D1FYdS/U+3LCRwN1Ys2ZJulqcH2W+YX9iYwiq6EfiV\nUgA6UtHt1ma+vy/mBjjKie8uPzFj/mYBd3jtEyt9lx/ga3UPJ3jeusHdF1rO7WD0\n3jbsxcUo1y1nAwLIFWH999a8LDhuOzCFb9ZU2GLzgagkYwXm3ZkNUmq1aOklQeyz\nUI3mG62yYbiNqhJodCeX8GVen7GlTSRPJYHaIt9tBkLG/848UcZEASiBACdPSUH8\ngpOu2W5MpTeMUDi/JTz5a+u28v0777yAj+FWCVU4s8LyNUtBDUSvvtIAOJeVLW2g\nbp+QgYtY1KjOUQkjdUsuavMCAwEAAQ==\n-----END PUBLIC KEY-----\n\" }, \"isCat\": false }"
-		var jsons map[string]interface{}
-		err := json.Unmarshal([]byte(jsonString), &jsons)
+
+		file, err := os.Open("assets/misskey.json")
 		if err != nil {
-			c.Logger().Error(err.Error())
-			return c.JSON(400, "invalid json")
+			c.Logger().Error(err)
+			return c.JSON(400, "invalid id")
+		}
+		defer file.Close()
+		decoder := json.NewDecoder(file)
+		var jsons map[string]interface{}
+		if err := decoder.Decode(&jsons); err != nil {
+			c.Logger().Error(err)
+			return c.JSON(400, "invalid id")
 		}
 		// id := c.Param("id")
 		// user, err := h.usecase.GetUser(ctx, id)
